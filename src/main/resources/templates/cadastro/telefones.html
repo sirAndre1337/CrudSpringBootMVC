@@ -26,6 +26,42 @@
 		</div>
 	</div>
 
+		<div class="row">
+			<form th:action="@{/salvartelefone/{idpessoa}(idpessoa=${pessoaobj.id})}" method="post" class="col s12">
+				<div class="input-field col s12">
+					<label for="id" class="active">id:</label>
+					 <input type="text"	name="id" id="id" class="validate" readonly="readonly"/>
+				 </div>
+				<div class="input-field col s12">
+					<input type="number" id="numero" class="validate" name="numero">
+					<label class="active" for="numero">Numero</label>
+				</div>
+				<div class="input-field col s12">
+					<label class="active"for="tipo">Tipo</label>
+					<input type="text" id="tipo" class="validate" name="tipo">
+				</div>
+				<button type="submit" class="waves-effect waves-light btn">Salvar</button>
+			</form>
+		 </div>
+		 
+		 <table class="striped">
+		<thead>
+			<tr>
+			<th>Id</th>
+			<th>Numero</th>
+			<th>Tipo</th>
+			</tr>
+		</thead>
+		<tr th:each="tel : ${telefones}">
+			<td th:text="${tel.id}" />
+			<td th:text="${tel.numero}" />
+			<td th:text="${tel.tipo}" />
+<!-- 			<td><a -->
+<!-- 				th:href="@{/editarpessoa/{idpessoa}(idpessoa=${pessoa.id})}">Editar</a></td> -->
+			<td><a th:href="@{/excluirtelefone/{idtelefone}(idtelefone=${tel.id})}">Excluir</a></td>
+		</tr>
+	</table>
+
 	<!--JavaScript at end of body for optimized loading-->
 	<script type="text/javascript" src="materialize/js/materialize.min.js"></script>
 </body>

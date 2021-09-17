@@ -3,6 +3,7 @@ package com.example.curso.model;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -24,7 +25,7 @@ public class Pessoa implements Serializable{
 	private String sobrenome;
 	private Integer idade;
 	
-	@OneToMany(mappedBy = "pessoa" , fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "pessoa" , fetch = FetchType.EAGER , cascade = CascadeType.REMOVE)
 	private List<Telefone> telefones;
 	
 	public List<Telefone> getTelefones() {

@@ -13,13 +13,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.curso.model.Pessoa;
+import com.example.curso.model.Telefone;
 import com.example.curso.repository.PessoaRepository;
+import com.example.curso.repository.TelefoneRepository;
 
 @Controller
 public class PessoaController {
 
 	@Autowired
 	PessoaRepository pessoaRepository;
+	
+	@Autowired
+	TelefoneRepository telefoneRepository;
 	
 	@RequestMapping(method = RequestMethod.GET , value = "/cadastropessoa")
 	public ModelAndView inicio() {
@@ -80,9 +85,37 @@ public class PessoaController {
 		
 		Pessoa pessoa = pessoaRepository.findById(id).get();
 		ModelAndView andView = new ModelAndView("cadastro/telefones");
+		andView.addObject("telefones", pessoa.getTelefones());
 		andView.addObject("pessoaobj" , pessoa);
 		
 		return andView;
 	}
 	
+	@PostMapping(value = "**/salvartelefone/{idpessoa}")
+	public ModelAndView salvaTelefone(Telefone telefone , @PathVariable("idpessoa") Long id) {
+		
+		
+		ModelAndView andView = new ModelAndView("cadastro/telefones");
+		Pessoa pessoa = pessoaRepository.findById(id).get();
+		
+		telefone.setPessoa(pessoa);
+		telefoneRepository.save(telefone);
+		
+		andView.addObject("pessoaobj" , pessoa);
+		andView.addObject("telefones", telefoneRepository.buscarTelefonesDoUser(id));
+		return andView;
+	}
+	
+	@GetMapping(value = "/excluirtelefone/{telefoneid}")
+	public ModelAndView excluirTelefone(@PathVariable("telefoneid") Long id) {
+		ModelAndView andView = new ModelAndView("cadastro/telefones");
+		
+		Pessoa pessoa = telefoneRepository.findById(id).get().getPessoa();
+		telefoneRepository.deleteById(id);
+		
+		andView.addObject("pessoaobj" , pessoa);
+		andView.addObject("telefones", telefoneRepository.buscarTelefonesDoUser(pessoa.getId()));
+		
+		return andView;
+	}
 }
