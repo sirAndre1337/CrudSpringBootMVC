@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org">
+	xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <!--Import Google Icon Font-->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -46,7 +47,7 @@
 						id="sobrenome" class="validate" />
 				</div>
 
-				<div class="input-field col s6">
+				<div class="input-field col s6" sec:authorize="hasRole('ROLE_ADMIN')">
 					<label for="idade" class="active">Idade:</label> <input
 						type="number" name="idade" th:field="*{idade}" id="idade"
 						class="validate" />
