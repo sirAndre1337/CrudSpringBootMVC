@@ -1,5 +1,6 @@
 package com.example.curso.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -7,12 +8,18 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import com.example.curso.service.ImplUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
 public class WebConfigSecurity extends WebSecurityConfigurerAdapter{
+	
+	@Autowired
+	private ImplUserDetailsService implUserDetailsService;
 
 	// configura as solicitacoes de acesso por HTTP
 	@Override
@@ -28,10 +35,15 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter{
 	// Cria autenticacao do usuario com banco de dados ou em memoria
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().passwordEncoder(NoOpPasswordEncoder.getInstance())
-		.withUser("Andre")
-		.password("admin")
-		.roles("ADMIN");
+		auth.userDetailsService(implUserDetailsService)
+		.passwordEncoder(new BCryptPasswordEncoder());
+		
+		
+		
+//		auth.inMemoryAuthentication().passwordEncoder(NoOpPasswordEncoder.getInstance())
+//		.withUser("Andre")
+//		.password("admin")
+//		.roles("ADMIN");
 	}
 	
 	// Ignora URL especificas
