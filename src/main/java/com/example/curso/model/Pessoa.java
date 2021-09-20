@@ -11,6 +11,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @SequenceGenerator(name = "seq_pessoa" , sequenceName = "seq_pessoa" , allocationSize = 1)
@@ -21,8 +24,16 @@ public class Pessoa implements Serializable{
 	@GeneratedValue(strategy = GenerationType.SEQUENCE , generator = "seq_pessoa")
 	private Long id;
 	
+	@NotNull(message = "Nome não pode ser nulo")
+	@NotEmpty(message = "Nome não pode ser vazio")
 	private String nome;
+	
+	@NotNull(message = "Sobrenome não pode ser nulo.")
+	@NotEmpty(message = "Sobrenome não pode ser vazio")
 	private String sobrenome;
+	
+	@Min(message = "Idade inválida" , value = 18)
+	@NotNull(message = "Informe a idade")
 	private Integer idade;
 	
 	@OneToMany(mappedBy = "pessoa" , fetch = FetchType.EAGER , cascade = CascadeType.REMOVE)

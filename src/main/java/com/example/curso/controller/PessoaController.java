@@ -1,9 +1,14 @@
 package com.example.curso.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,7 +40,24 @@ public class PessoaController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST , value = "**/salvarpessoa")
-	public ModelAndView salvar(Pessoa pessoa){
+	public ModelAndView salvar(@Valid Pessoa pessoa, BindingResult bindingResult){
+		
+		if(bindingResult.hasErrors()) {
+			
+			ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
+			Iterable<Pessoa> pessoasList = pessoaRepository.findAll();
+			modelAndView.addObject("pessoaobj" , pessoa);
+			modelAndView.addObject("pessoas", pessoasList);
+			
+			// pegando as msg de erros
+			List<String> msg = new ArrayList<String>();
+			for (ObjectError objectError: bindingResult.getAllErrors()) {
+				msg.add(objectError.getDefaultMessage()); // msg das Anotacoes definidas no modelo
+			}
+			
+			modelAndView.addObject("msg", msg);
+			return modelAndView;
+		}
 		
 		pessoaRepository.save(pessoa);
 		return pessoas();
@@ -93,7 +115,6 @@ public class PessoaController {
 	
 	@PostMapping(value = "**/salvartelefone/{idpessoa}")
 	public ModelAndView salvaTelefone(Telefone telefone , @PathVariable("idpessoa") Long id) {
-		
 		
 		ModelAndView andView = new ModelAndView("cadastro/telefones");
 		Pessoa pessoa = pessoaRepository.findById(id).get();

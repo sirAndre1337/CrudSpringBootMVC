@@ -8,6 +8,7 @@
 <!--Import materialize.css-->
 <link type="text/css" rel="stylesheet"
 	href="/materialize/css/materialize.min.css" media="screen,projection" />
+<link type="text/css" rel="stylesheet" href="/style.css">	
 <meta charset="ISO-8859-1">
 <title>Cadastro de Pessoa</title>
 </head>
@@ -15,6 +16,16 @@
 	<h3>Spring boot + Thymeleaf + Material Design Lite</h3>
 	<h5>Cadastro de pessoa</h5>
 	<div class="row">
+	
+	<br/>
+		<div th:each="m : ${msg}">
+			<ul class="collection">
+				<li class="collection-item"><span th:text="${m}"></span></li>
+			</ul>
+		</div>
+	<br/>
+	
+	
 		<form action="salvarpessoa" method="POST" th:object="${pessoaobj}"
 			class="col s12" id="formPessoa">
 			<div class="row">
