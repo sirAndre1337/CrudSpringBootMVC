@@ -119,6 +119,26 @@ public class PessoaController {
 		ModelAndView andView = new ModelAndView("cadastro/telefones");
 		Pessoa pessoa = pessoaRepository.findById(id).get();
 		
+		if (telefone.getNumero().isEmpty() || telefone.getTipo().isEmpty() || !telefone.getTipo().isEmpty() && telefone.getTipo().trim().isEmpty()){
+			
+			List<String> msg = new ArrayList<String>();
+			
+			if (telefone.getNumero().isEmpty()) {
+				msg.add("Informe o numero");
+			}
+			
+			if(telefone.getTipo().isEmpty() || !telefone.getTipo().isEmpty() && telefone.getTipo().trim().isEmpty()) {
+				msg.add("Informe o tipo");
+			}
+			
+			andView.addObject("pessoaobj" , pessoa);
+			andView.addObject("telefones", telefoneRepository.buscarTelefonesDoUser(id));
+			andView.addObject("msg", msg);
+			return andView;
+			
+		}
+		
+		
 		telefone.setPessoa(pessoa);
 		telefoneRepository.save(telefone);
 		

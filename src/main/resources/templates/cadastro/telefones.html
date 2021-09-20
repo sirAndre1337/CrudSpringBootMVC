@@ -27,6 +27,16 @@
 	</div>
 
 		<div class="row">
+		
+			<br/>
+			<div th:each="m : ${msg}">
+				<ul class="collection">
+					<li class="collection-item"><span th:text="${m}"></span></li>
+				</ul>
+			</div>
+			<br/>
+		
+		
 			<form th:action="@{/salvartelefone/{idpessoa}(idpessoa=${pessoaobj.id})}" method="post" class="col s12">
 				<div class="input-field col s12">
 					<label for="id" class="active">id:</label>
