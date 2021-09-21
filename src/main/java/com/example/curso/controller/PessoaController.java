@@ -93,13 +93,30 @@ public class PessoaController {
 	}
 	
 	@PostMapping(value = "**/pesquisarpessoa")
-	public ModelAndView pesquisar(@RequestParam("nomepesquisa") String nomepesquisa) {
+	public ModelAndView pesquisar(@RequestParam("nomepesquisa") String nomepesquisa , @RequestParam("sexopesquisa") String sexopesquisa) {
+		
+		
+		if (!sexopesquisa.isEmpty() && nomepesquisa.isEmpty()) {
+			ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
+			List<Pessoa> lista = pessoaRepository.pesquisaPorSexo(sexopesquisa);
+			andView.addObject("pessoaobj" , new Pessoa());
+			andView.addObject("pessoas", lista);
+			return andView;
+			
+		} if (!sexopesquisa.isEmpty() && !nomepesquisa.isEmpty()) {
+			ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
+			List<Pessoa> lista = pessoaRepository.pesquisaPorSexoENome(nomepesquisa.toUpperCase(), sexopesquisa);
+			andView.addObject("pessoaobj" , new Pessoa());
+			andView.addObject("pessoas", lista);
+			return andView;
+		}
 		
 		ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
 		List<Pessoa> lista = pessoaRepository.pesquisaPorNome(nomepesquisa.toUpperCase());
 		andView.addObject("pessoaobj" , new Pessoa());
 		andView.addObject("pessoas", lista);
 		return andView;
+		
 	}
 	
 	@GetMapping(value = "/telefones/{idpessoa}")

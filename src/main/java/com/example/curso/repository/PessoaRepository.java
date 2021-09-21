@@ -15,4 +15,9 @@ public interface PessoaRepository extends JpaRepository<Pessoa, Long>{
 	@Query("select p from Pessoa p where upper(p.nome) like %?1%")
 	List<Pessoa> pesquisaPorNome(String nome);
 	
+	@Query("select p from Pessoa p where p.sexo = ?1")
+	List<Pessoa> pesquisaPorSexo(String sexo);
+	
+	@Query("select p from Pessoa p where upper(p.nome) like %?1% and p.sexo = ?2")
+	List<Pessoa> pesquisaPorSexoENome(String nome , String sexo);
 }
