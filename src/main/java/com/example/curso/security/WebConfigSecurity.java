@@ -30,7 +30,10 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter{
 		.antMatchers(HttpMethod.GET , "/").permitAll() // Qualquer usuario acessa a pagina inicial
 		.antMatchers(HttpMethod.GET , "/cadastropessoa").hasAnyRole("ADMIN") // deixando somente quem tem Role de admin acessar essa url.
 		.anyRequest().authenticated().and().formLogin().permitAll() // permite qualquer usuario
-		.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")); // mapeia URL de logout e invalida o usuario autenticado
+		.loginPage("/login")
+		.defaultSuccessUrl("/cadastropessoa")
+		.failureUrl("/login?error=true")
+		.and().logout().logoutSuccessUrl("/login").logoutRequestMatcher(new AntPathRequestMatcher("/logout")); // mapeia URL de logout e invalida o usuario autenticado
 	}
 	
 	// Cria autenticacao do usuario com banco de dados ou em memoria
@@ -50,7 +53,7 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter{
 	// Ignora URL especificas
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/materialize**"); // deixa acessar tudo que estiver na pasta materialize para qualquer usuario.
+		web.ignoring().antMatchers("/materialize/**"); // deixa acessar tudo que estiver na pasta materialize para qualquer usuario.
 	}
 	
 }
