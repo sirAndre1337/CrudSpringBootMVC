@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.example.curso.model.Pessoa;
 import com.example.curso.model.Telefone;
 import com.example.curso.repository.PessoaRepository;
+import com.example.curso.repository.ProfissaoRepository;
 import com.example.curso.repository.TelefoneRepository;
 import com.example.curso.service.ReportUtil;
 
@@ -37,12 +38,16 @@ public class PessoaController {
 	@Autowired
 	private ReportUtil reportUtil;
 	
+	@Autowired
+	private ProfissaoRepository profissaoRepository;
+	
 	
 	@RequestMapping(method = RequestMethod.GET , value = "/cadastropessoa")
 	public ModelAndView inicio() {
 		ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
 		andView.addObject("pessoaobj" , new Pessoa());
 		andView.addObject("pessoas" , pessoaRepository.findAll());
+		andView.addObject("profissoes", profissaoRepository.findAll());
 		return andView;
 	}
 	
@@ -77,6 +82,7 @@ public class PessoaController {
 		Iterable<Pessoa> pessoasList = pessoaRepository.findAll();
 		andView.addObject("pessoaobj" , new Pessoa());
 		andView.addObject("pessoas", pessoasList);
+		andView.addObject("profissoes", profissaoRepository.findAll());
 		return andView;
 	}
 	
@@ -86,8 +92,10 @@ public class PessoaController {
 		
 		ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
 		Pessoa pessoaBuscada = pessoaRepository.findById(id).get();
-		
+		Iterable<Pessoa> pessoasList = pessoaRepository.findAll();
 		andView.addObject("pessoaobj" , pessoaBuscada);
+		andView.addObject("pessoas", pessoasList);
+		andView.addObject("profissoes", profissaoRepository.findAll());
 		return andView;
 	}
 	
