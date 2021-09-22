@@ -3,6 +3,8 @@ package com.example.curso.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +23,20 @@ import com.example.curso.model.Pessoa;
 import com.example.curso.model.Telefone;
 import com.example.curso.repository.PessoaRepository;
 import com.example.curso.repository.TelefoneRepository;
+import com.example.curso.service.ReportUtil;
 
 @Controller
 public class PessoaController {
 
 	@Autowired
-	PessoaRepository pessoaRepository;
+	private PessoaRepository pessoaRepository;
 	
 	@Autowired
-	TelefoneRepository telefoneRepository;
+	private TelefoneRepository telefoneRepository;
+	
+	@Autowired
+	private ReportUtil reportUtil;
+	
 	
 	@RequestMapping(method = RequestMethod.GET , value = "/cadastropessoa")
 	public ModelAndView inicio() {
@@ -175,5 +182,37 @@ public class PessoaController {
 		andView.addObject("telefones", telefoneRepository.buscarTelefonesDoUser(pessoa.getId()));
 		
 		return andView;
+	}
+	
+	@GetMapping(value = "**/pesquisarpessoa")
+	public void imprimirPDF(@RequestParam("nomepesquisa") String nomepesquisa , @RequestParam("sexopesquisa") String sexopesquisa , HttpServletRequest request , HttpServletResponse response) throws Exception {
+		List<Pessoa> pessoas = new ArrayList<Pessoa>();
+		
+		if (!sexopesquisa.isEmpty() && nomepesquisa.isEmpty()) {
+			pessoas = pessoaRepository.pesquisaPorSexo(sexopesquisa);
+		} else if (!sexopesquisa.isEmpty() && !nomepesquisa.isEmpty()) {
+			pessoas = pessoaRepository.pesquisaPorSexoENome(nomepesquisa.toUpperCase(), sexopesquisa);
+		} else {
+			pessoas = pessoaRepository.pesquisaPorNome(nomepesquisa.toUpperCase());
+		}
+		
+		/*Chama o servico que faz a geracao do relatorio*/
+		
+		 byte[] pdf = reportUtil.gerarRelatorio(pessoas, "pessoa", request.getServletContext());
+		 
+		 /*Tamanho da respota*/
+		 response.setContentLengthLong(pdf.length);
+		 
+		 /*Definir na respota o tipo de arquivo*/
+		 response.setContentType("application/octet-stream");
+		 
+		 /*Definir o cabecalho da resposta*/
+		 String headerKey = "Content-Disposition";
+		 String headerValue = String.format("attachment; filename=\"%s\"", "relatorio.pdf");
+		 response.setHeader(headerKey, headerValue);
+		 
+		 /*Finalizar a respota pro navegador*/
+		 response.getOutputStream().write(pdf);
+		 
 	}
 }
