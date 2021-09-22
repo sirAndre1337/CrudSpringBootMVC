@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -53,6 +55,15 @@ public class Pessoa implements Serializable{
 	@ManyToOne()
 	private Profissao profissao;
 	
+	@Enumerated(EnumType.STRING)
+	private Cargo cargo;
+	
+	public Cargo getCargo() {
+		return cargo;
+	}
+	public void setCargo(Cargo cargo) {
+		this.cargo = cargo;
+	}
 	public Profissao getProfissao() {
 		return profissao;
 	}
