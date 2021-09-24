@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -237,6 +238,29 @@ public class PessoaController {
 		 
 		 /*Finalizar a respota pro navegador*/
 		 response.getOutputStream().write(pdf);
-		 
+	}
+	
+	@GetMapping(value = "/baixarcurriculo/{idpessoa}")
+	public void baixarCurriculo(@PathVariable ("idpessoa") Long id , HttpServletResponse response) throws IOException {
+		
+		Pessoa pessoa = pessoaRepository.findById(id).get();
+		
+		if (pessoa.getCurriculo() != null) {
+			
+			/*Setar tamanho da resposta*/
+			response.setContentLength(pessoa.getCurriculo().length);
+			
+			/*Definir o tipo do arquivo para a resposta*/
+			response.setContentType(pessoa.getTipoFileCurriculo());
+			
+			/*Definir o cabecalho da resposta*/
+			String headerKey = "Content-Disposition";
+			String headerValue = String.format("attachment; filename=\"%s\"", pessoa.getNomeFileCurriculo());
+			response.setHeader(headerKey, headerValue);
+			
+			/*Finalizar a respota pro navegador*/
+			response.getOutputStream().write(pessoa.getCurriculo());
+		}
+		
 	}
 }

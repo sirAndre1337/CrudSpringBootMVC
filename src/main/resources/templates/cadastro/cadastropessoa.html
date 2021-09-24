@@ -112,7 +112,7 @@
 				
 				<div class="input-field col s6">
 					<label for="file" class="active">Curriculo</label>
-					<input type="file" id="file" name="file">
+					<input type="file" id="file" name="file" class="file-field input-field">
 				</div>
 				
 				</div>
@@ -161,6 +161,7 @@
 			<th>Nome</th>
 			<th>Sobrenome</th>
 			<th>Idade</th>
+			<th>Curriculo</th>
 			<th>Editar</th>
 			<th>Excluir</th>
 			</tr>
@@ -170,6 +171,10 @@
 			<td><a th:href="@{/telefones/{idpessoa}(idpessoa=${pessoa.id})}"><span th:text="${pessoa.nome}"></span></a></td>
 			<td th:text="${pessoa.sobrenome}" />
 			<td th:text="${pessoa.idade}" />
+			<td>
+			<a th:if="${pessoa.curriculo != null}" th:href="@{/baixarcurriculo/{idpessoa}(idpessoa=${pessoa.id})}">Download</a>
+			<span th:if="${pessoa.curriculo == null}"><em>Sem arquivo</em></span>
+			</td>
 			<td><a
 				th:href="@{/editarpessoa/{idpessoa}(idpessoa=${pessoa.id})}">Editar</a></td>
 			<td><a
