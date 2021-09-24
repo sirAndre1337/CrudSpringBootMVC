@@ -142,9 +142,11 @@ public class PessoaController {
 		/*Entra na condicao se o Sexo e o Nome for informado*/	
 		} if (!sexopesquisa.isEmpty() && !nomepesquisa.isEmpty()) {
 			ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
-			List<Pessoa> lista = pessoaRepository.pesquisaPorSexoENome(nomepesquisa.toUpperCase(), sexopesquisa);
+			Page<Pessoa> lista = pessoaRepository.pesquisaPorSexoENomePaginada(nomepesquisa , sexopesquisa , pageable);
 			andView.addObject("pessoaobj" , new Pessoa());
 			andView.addObject("pessoas", lista);
+			andView.addObject("nomepesquisa" , nomepesquisa);
+			andView.addObject("sexopesquisa" , sexopesquisa);
 			return andView;
 		}
 		
@@ -276,10 +278,15 @@ public class PessoaController {
 		
 		Page<Pessoa> pagePessoa = null;
 		
+		/*Entra se so informa o sexo*/
 		if(nomepesquisa.isEmpty() && !sexopesquisa.isEmpty()) {
 			pagePessoa = pessoaRepository.pesquisaPorSexoPaginado(sexopesquisa, pageable);
-		} else {
+		/*Entra se so informa o nome*/	
+		} else if (!nomepesquisa.isEmpty() && sexopesquisa.isEmpty()) {
 			pagePessoa = pessoaRepository.pesquisaPessoaPorNomePaginada(nomepesquisa, pageable);
+		/*Entra se informa os 2 ou nenhum*/	
+		} else {
+			pagePessoa = pessoaRepository.pesquisaPorSexoENomePaginada(nomepesquisa, sexopesquisa, pageable);
 		}
 		
 		model.addObject("pessoas", pagePessoa);
