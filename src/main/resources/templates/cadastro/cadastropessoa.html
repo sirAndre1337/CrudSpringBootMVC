@@ -181,6 +181,25 @@
 				th:href="@{/excluirpessoa/{idpessoa}(idpessoa=${pessoa.id})}">Excluir</a></td>
 		</tr>
 	</table>
+	
+	<div class="row" style="margin-top: 30px;">
+	<div class="center">
+		
+		<span th:if="${pessoas.hasPrevious()}">
+			<a th:href="@{/pessoaspag(page=${pessoas.number-1} , size=${pessoas.size})}"> << </a>
+		</span>
+	
+		<th:block th:each="i: ${#numbers.sequence(0 , pessoas.totalPages - 1)}">
+			<a th:href="@{/pessoaspag(page=${i}, size=${pessoas.size})}">[[ ${i} + 1 ]]</a>
+		</th:block>
+		
+		<span th:if="${pessoas.hasNext()}">
+			<a th:href="@{/pessoaspag(page=${pessoas.number+1} , size=${pessoas.size})}"> >> </a>
+		</span>
+		
+	</div>
+	</div>
+	
 <!-- Adicionando JQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
