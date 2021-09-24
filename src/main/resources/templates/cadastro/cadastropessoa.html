@@ -138,7 +138,7 @@
 			</div>
 			<div class="input-field col s6">
 				<label for="sexopesquisa" class="active">Pesquisar por sexo</label>
-				 <select class="browser-default" name="sexopesquisa" id="sexopesquisa">
+				 <select class="browser-default" name="sexopesquisa" id="sexopesquisa" th:value="${sexopesquisa}">
 				 		<option value="">--[Todos]--</option>
 					 	<option value="MASCULINO" th:text="Masculino">
 					 	<option value="FEMININO" th:text="Feminino">
@@ -186,15 +186,15 @@
 	<div class="center">
 		
 		<span th:if="${pessoas.hasPrevious()}">
-			<a th:href="@{/pessoaspag(page=${pessoas.number-1} , size=${pessoas.size} , nomepesquisa=${nomepesquisa})}"> << </a>
+			<a th:href="@{/pessoaspag(page=${pessoas.number-1} , size=${pessoas.size} , nomepesquisa=${nomepesquisa} , sexopesquisa=${sexopesquisa})}"> << </a>
 		</span>
 	
 		<th:block th:each="i: ${#numbers.sequence(0 , pessoas.totalPages - 1)}">
-			<a th:href="@{/pessoaspag(page=${i}, size=${pessoas.size} , nomepesquisa=${nomepesquisa})}">[[ ${i} + 1 ]]</a>
+			<a th:href="@{/pessoaspag(page=${i}, size=${pessoas.size} , nomepesquisa=${nomepesquisa} , sexopesquisa=${sexopesquisa})}">[[ ${i} + 1 ]]</a>
 		</th:block>
 		
 		<span th:if="${pessoas.hasNext()}">
-			<a th:href="@{/pessoaspag(page=${pessoas.number+1} , size=${pessoas.size} , nomepesquisa=${nomepesquisa})}"> >> </a>
+			<a th:href="@{/pessoaspag(page=${pessoas.number+1} , size=${pessoas.size} , nomepesquisa=${nomepesquisa} , sexopesquisa=${sexopesquisa})}"> >> </a>
 		</span>
 		
 	</div>

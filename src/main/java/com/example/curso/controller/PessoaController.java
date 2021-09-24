@@ -133,9 +133,10 @@ public class PessoaController {
 		/*Entra na condicao se somente o Sexo for informado*/
 		if (!sexopesquisa.isEmpty() && nomepesquisa.isEmpty()) {
 			ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
-			List<Pessoa> lista = pessoaRepository.pesquisaPorSexo(sexopesquisa);
+			Page<Pessoa> lista = pessoaRepository.pesquisaPorSexoPaginado(sexopesquisa , pageable);
 			andView.addObject("pessoaobj" , new Pessoa());
 			andView.addObject("pessoas", lista);
+			andView.addObject("sexopesquisa" , sexopesquisa);
 			return andView;
 			
 		/*Entra na condicao se o Sexo e o Nome for informado*/	
@@ -271,12 +272,20 @@ public class PessoaController {
 	
 	@GetMapping("/pessoaspag")
 	public ModelAndView carregaPessoaPorPaginacao(@PageableDefault(size = 5 , sort = {"nome"}) Pageable pageable ,
-			ModelAndView model , @RequestParam("nomepesquisa") String nomepesquisa) {
+			ModelAndView model , @RequestParam("nomepesquisa") String nomepesquisa , @RequestParam("sexopesquisa") String sexopesquisa) {
 		
-		Page<Pessoa> pagePessoa = pessoaRepository.pesquisaPessoaPorNomePaginada(nomepesquisa, pageable);
+		Page<Pessoa> pagePessoa = null;
+		
+		if(nomepesquisa.isEmpty() && !sexopesquisa.isEmpty()) {
+			pagePessoa = pessoaRepository.pesquisaPorSexoPaginado(sexopesquisa, pageable);
+		} else {
+			pagePessoa = pessoaRepository.pesquisaPessoaPorNomePaginada(nomepesquisa, pageable);
+		}
+		
 		model.addObject("pessoas", pagePessoa);
 		model.addObject("pessoaobj", new Pessoa());
 		model.addObject("nomepesquisa", nomepesquisa);
+		model.addObject("sexopesquisa" , sexopesquisa);
 		model.setViewName("cadastro/cadastropessoa");
 		
 		return model;
