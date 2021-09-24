@@ -1,5 +1,6 @@
 package com.example.curso.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.curso.model.Pessoa;
@@ -51,8 +53,8 @@ public class PessoaController {
 		return andView;
 	}
 	
-	@RequestMapping(method = RequestMethod.POST , value = "**/salvarpessoa")
-	public ModelAndView salvar(@Valid Pessoa pessoa, BindingResult bindingResult){
+	@RequestMapping(method = RequestMethod.POST , value = "**/salvarpessoa" , consumes = {"multipart/form-data"})
+	public ModelAndView salvar(@Valid Pessoa pessoa, BindingResult bindingResult , final MultipartFile file) throws IOException{
 		
 		if(bindingResult.hasErrors()) {
 			
@@ -69,6 +71,20 @@ public class PessoaController {
 			
 			modelAndView.addObject("msg", msg);
 			return modelAndView;
+		}
+		
+		if (file.getSize() > 0) {
+			pessoa.setCurriculo(file.getBytes());
+			pessoa.setNomeFileCurriculo(file.getOriginalFilename());
+			pessoa.setTipoFileCurriculo(file.getContentType());
+		} else {
+			if (pessoa.getId() != null) { // Verifica se e edicao para não apagar os dados ao editar um usuario.
+				Pessoa pessoaTemp = pessoaRepository.findById(pessoa.getId()).get();
+				
+				pessoa.setCurriculo(pessoaTemp.getCurriculo());
+				pessoa.setTipoFileCurriculo(pessoaTemp.getTipoFileCurriculo());
+				pessoa.setNomeFileCurriculo(pessoaTemp.getNomeFileCurriculo());
+			}
 		}
 		
 		pessoaRepository.save(pessoa);

@@ -28,7 +28,7 @@
 	
 	
 		<form action="salvarpessoa" method="POST" th:object="${pessoaobj}"
-			class="col s12" id="formPessoa">
+			class="col s12" id="formPessoa" enctype="multipart/form-data">
 			<div class="row">
 
 				<div class="input-field col s6">
@@ -108,6 +108,11 @@
 				<div class="input-field col s6">
 					<label class="active" for="dataNascimento">Data Nascimento:</label>
 					<input class="validate" id="dataNascimento" th:field="*{dataNascimento}" type="date" name="dataNascimento" placeholder="dd/mm/aaaa">				
+				</div>
+				
+				<div class="input-field col s6">
+					<label for="file" class="active">Curriculo</label>
+					<input type="file" id="file" name="file">
 				</div>
 				
 				</div>
