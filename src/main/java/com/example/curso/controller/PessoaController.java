@@ -9,7 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -49,7 +54,7 @@ public class PessoaController {
 	public ModelAndView inicio() {
 		ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
 		andView.addObject("pessoaobj" , new Pessoa());
-		andView.addObject("pessoas" , pessoaRepository.findAll());
+		andView.addObject("pessoas" , pessoaRepository.findAll(PageRequest.of(0, 5 , Sort.by("nome"))));
 		andView.addObject("profissoes", profissaoRepository.findAll());
 		return andView;
 	}
@@ -60,9 +65,8 @@ public class PessoaController {
 		if(bindingResult.hasErrors()) {
 			
 			ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
-			Iterable<Pessoa> pessoasList = pessoaRepository.findAll();
 			modelAndView.addObject("pessoaobj" , pessoa);
-			modelAndView.addObject("pessoas", pessoasList);
+			modelAndView.addObject("pessoas", pessoaRepository.findAll(PageRequest.of(0, 5 , Sort.by("nome"))));
 			
 			// pegando as msg de erros
 			List<String> msg = new ArrayList<String>();
@@ -96,9 +100,8 @@ public class PessoaController {
 	public ModelAndView pessoas( ) {
 		
 		ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
-		Iterable<Pessoa> pessoasList = pessoaRepository.findAll();
 		andView.addObject("pessoaobj" , new Pessoa());
-		andView.addObject("pessoas", pessoasList);
+		andView.addObject("pessoas", pessoaRepository.findAll(PageRequest.of(0, 5 , Sort.by("nome"))));
 		andView.addObject("profissoes", profissaoRepository.findAll());
 		return andView;
 	}
@@ -109,9 +112,8 @@ public class PessoaController {
 		
 		ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
 		Pessoa pessoaBuscada = pessoaRepository.findById(id).get();
-		Iterable<Pessoa> pessoasList = pessoaRepository.findAll();
 		andView.addObject("pessoaobj" , pessoaBuscada);
-		andView.addObject("pessoas", pessoasList);
+		andView.addObject("pessoas", pessoaRepository.findAll(PageRequest.of(0, 5 , Sort.by("nome"))));
 		andView.addObject("profissoes", profissaoRepository.findAll());
 		return andView;
 	}
@@ -261,6 +263,16 @@ public class PessoaController {
 			/*Finalizar a respota pro navegador*/
 			response.getOutputStream().write(pessoa.getCurriculo());
 		}
+	}
+	
+	@GetMapping("/pessoaspag")
+	public ModelAndView carregaPessoaPorPaginacao(@PageableDefault(size = 5) Pageable pageable , ModelAndView model) {
 		
+		Page<Pessoa> pagePessoa = pessoaRepository.findAll(pageable);
+		model.addObject("pessoas", pagePessoa);
+		model.addObject("pessoaobj", new Pessoa());
+		model.setViewName("cadastro/cadastropessoa");
+		
+		return model;
 	}
 }
