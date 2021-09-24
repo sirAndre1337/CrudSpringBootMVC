@@ -134,7 +134,7 @@
 		<form action="pesquisarpessoa" method="post" id="pesquisarpessoa">
 			<div class="input-field col s6">
 				<label for="nomepesquisa" class="active">Pesquisar por Nome:</label>
-				<input type="text" name="nomepesquisa" id="nomepesquisa">
+				<input type="text" name="nomepesquisa" id="nomepesquisa" th:value="${nomepesquisa}">
 			</div>
 			<div class="input-field col s6">
 				<label for="sexopesquisa" class="active">Pesquisar por sexo</label>
@@ -186,15 +186,15 @@
 	<div class="center">
 		
 		<span th:if="${pessoas.hasPrevious()}">
-			<a th:href="@{/pessoaspag(page=${pessoas.number-1} , size=${pessoas.size})}"> << </a>
+			<a th:href="@{/pessoaspag(page=${pessoas.number-1} , size=${pessoas.size} , nomepesquisa=${nomepesquisa})}"> << </a>
 		</span>
 	
 		<th:block th:each="i: ${#numbers.sequence(0 , pessoas.totalPages - 1)}">
-			<a th:href="@{/pessoaspag(page=${i}, size=${pessoas.size})}">[[ ${i} + 1 ]]</a>
+			<a th:href="@{/pessoaspag(page=${i}, size=${pessoas.size} , nomepesquisa=${nomepesquisa})}">[[ ${i} + 1 ]]</a>
 		</th:block>
 		
 		<span th:if="${pessoas.hasNext()}">
-			<a th:href="@{/pessoaspag(page=${pessoas.number+1} , size=${pessoas.size})}"> >> </a>
+			<a th:href="@{/pessoaspag(page=${pessoas.number+1} , size=${pessoas.size} , nomepesquisa=${nomepesquisa})}"> >> </a>
 		</span>
 		
 	</div>

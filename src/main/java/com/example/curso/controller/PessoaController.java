@@ -127,9 +127,10 @@ public class PessoaController {
 	}
 	
 	@PostMapping(value = "**/pesquisarpessoa")
-	public ModelAndView pesquisar(@RequestParam("nomepesquisa") String nomepesquisa , @RequestParam("sexopesquisa") String sexopesquisa) {
+	public ModelAndView pesquisar(@RequestParam("nomepesquisa") String nomepesquisa ,
+			@RequestParam("sexopesquisa") String sexopesquisa , @PageableDefault(size = 5 , sort = {"nome"}) Pageable pageable) {
 		
-		
+		/*Entra na condicao se somente o Sexo for informado*/
 		if (!sexopesquisa.isEmpty() && nomepesquisa.isEmpty()) {
 			ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
 			List<Pessoa> lista = pessoaRepository.pesquisaPorSexo(sexopesquisa);
@@ -137,6 +138,7 @@ public class PessoaController {
 			andView.addObject("pessoas", lista);
 			return andView;
 			
+		/*Entra na condicao se o Sexo e o Nome for informado*/	
 		} if (!sexopesquisa.isEmpty() && !nomepesquisa.isEmpty()) {
 			ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
 			List<Pessoa> lista = pessoaRepository.pesquisaPorSexoENome(nomepesquisa.toUpperCase(), sexopesquisa);
@@ -145,10 +147,12 @@ public class PessoaController {
 			return andView;
 		}
 		
+		/*Somente executa esse codigo se informou somente o Nome OU não informou NADA*/
 		ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
-		List<Pessoa> lista = pessoaRepository.pesquisaPorNome(nomepesquisa.toUpperCase());
+		Page<Pessoa> lista = pessoaRepository.pesquisaPessoaPorNomePaginada(nomepesquisa, pageable);
 		andView.addObject("pessoaobj" , new Pessoa());
 		andView.addObject("pessoas", lista);
+		andView.addObject("nomepesquisa" , nomepesquisa);
 		return andView;
 		
 	}
@@ -266,11 +270,13 @@ public class PessoaController {
 	}
 	
 	@GetMapping("/pessoaspag")
-	public ModelAndView carregaPessoaPorPaginacao(@PageableDefault(size = 5) Pageable pageable , ModelAndView model) {
+	public ModelAndView carregaPessoaPorPaginacao(@PageableDefault(size = 5 , sort = {"nome"}) Pageable pageable ,
+			ModelAndView model , @RequestParam("nomepesquisa") String nomepesquisa) {
 		
-		Page<Pessoa> pagePessoa = pessoaRepository.findAll(pageable);
+		Page<Pessoa> pagePessoa = pessoaRepository.pesquisaPessoaPorNomePaginada(nomepesquisa, pageable);
 		model.addObject("pessoas", pagePessoa);
 		model.addObject("pessoaobj", new Pessoa());
+		model.addObject("nomepesquisa", nomepesquisa);
 		model.setViewName("cadastro/cadastropessoa");
 		
 		return model;
