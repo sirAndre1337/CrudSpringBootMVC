@@ -12,6 +12,7 @@ class ApplicationTests {
 		
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		System.out.println(encoder.encode("admin"));
+		//$2a$10$9frO/Tnkdl/6hSYwBs7aE.5A2ox.j8scgMH7e2NHSDllSlXmT6Xri - admin Criptografado
 		
 	}
 	
