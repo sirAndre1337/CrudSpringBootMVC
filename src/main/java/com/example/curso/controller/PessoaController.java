@@ -60,7 +60,7 @@ public class PessoaController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST , value = "**/salvarpessoa" , consumes = {"multipart/form-data"})
-	public ModelAndView salvar(@Valid Pessoa pessoa, BindingResult bindingResult , final MultipartFile file) throws IOException{
+	public ModelAndView salvar(@Valid Pessoa pessoa, BindingResult bindingResult , final MultipartFile file, @RequestParam("telefones") String[] telefones , @RequestParam("tiposTelefone") String[] tipoTelefone) throws IOException{
 		
 		if(bindingResult.hasErrors()) {
 			
@@ -92,6 +92,18 @@ public class PessoaController {
 			}
 		}
 		
+		if (telefones.length > 0) {
+			@Valid
+			Pessoa pessoaSalva = pessoaRepository.save(pessoa);
+			for (int i = 0; i < telefones.length; i++) {
+				Telefone tel = new Telefone();
+				tel.setNumero(telefones[i]);
+				tel.setPessoa(pessoaSalva);
+				tel.setTipo(tipoTelefone[i]);
+				
+				telefoneRepository.save(tel);
+			}
+		}
 		pessoaRepository.save(pessoa);
 		return pessoas();
 	}

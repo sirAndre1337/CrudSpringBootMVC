@@ -115,11 +115,40 @@
 					<input type="file" id="file" name="file" class="file-field input-field">
 				</div>
 				
+				<div class="input-field col s6">
+					<label for="telefonePessoaTemp" class="active">Telefone</label>
+					<input type="tel" id="telefonePessoaTemp">
+						<div class="input-field col s6">
+							<p>
+								<label>
+								<input type="radio" name="tipoTelefone" value="CELULAR" id="tipoCel"><span>Celular</span>
+								</label>
+							</p>
+							<p>
+								<label>
+								<input type="radio" name="tipoTelefone" value="RESIDENCIAL" id="tipoRes"><span>Residencial</span>
+								</label>
+							</p>
+							<button type="button" onclick="addTelefone()" class="waves-effect waves-light btn">Salvar Telefone</button>
+						</div>
 				</div>
-			<input class="waves-effect waves-light btn" type="submit"
-				value="Salvar" /> <input class="waves-effect waves-light btn"
-				type="button" value="Novo"
-				onclick="document.getElementById('formPessoa').reset();" />
+				
+				<input type="hidden" id="tels" name="telefones">
+				<input type="hidden" id="tipos" name="tiposTelefone">
+				
+				<div class="input-field col s6">
+					<input class="waves-effect waves-light btn" type="submit"
+					value="Salvar" /> <input class="waves-effect waves-light btn"
+					type="button" value="Novo"
+					onclick="document.getElementById('formPessoa').reset();" />
+				</div>
+				
+				<div class="input-field col s6" id="fones">
+					<label class="active">Telefones Salvos</label>
+					<em><output id="telSalvos"></output></em>
+				</div>
+				
+			</div>
 		</form>
 	</div>
 
@@ -204,6 +233,30 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
+
+<script type="text/javascript">
+		var telefone = [];
+		var tipos = [];
+		function addTelefone() {
+		
+		if (document.getElementById('tipoCel').checked == true) {
+			tipos.push('CELULAR');
+		} 
+		
+		if (document.getElementById('tipoRes').checked == true) {
+			tipos.push('RESIDENCIAL');
+		}
+		
+		telefone.push(document.getElementById('telefonePessoaTemp').value);
+		document.getElementById('telefonePessoaTemp').value = '';
+		
+		document.getElementById('tels').value = telefone;
+		document.getElementById('telSalvos').value = telefone;
+		document.getElementById('tipos').value = tipos;
+		
+		
+	}
+</script>
 
 <script>
 
