@@ -137,10 +137,19 @@
 				<input type="hidden" id="tipos" name="tiposTelefone">
 				
 				<div class="input-field col s6">
-					<input class="waves-effect waves-light btn" type="submit"
-					value="Salvar" /> <input class="waves-effect waves-light btn"
-					type="button" value="Novo"
-					onclick="document.getElementById('formPessoa').reset();" />
+						<label for="estado" class="active">Estado</label>
+						<select class="browser-default" onchange="carregaCidades(this.value)">
+							<option value="">--[Selecione]--</option>
+						    <option th:each = "e : ${estados}" th:value="${e.id}" th:text="${e.nome}">
+						</select>
+						<br/>
+					<div>
+						<label for="city" class="active">Cidades</label>
+						<select class="browser-default" id="city" name="city" th:field="*{city}">
+	    					<option value="" disabled>--[Selecione um Estado]--</option>
+	    					<option th:each = "c : ${citys}" th:value="${c.nome}" th:text="${c.nome}">
+	  					</select>
+					</div>
 				</div>
 				
 				<div class="input-field col s6" id="fones">
@@ -148,6 +157,10 @@
 					<em><output id="telSalvos"></output></em>
 				</div>
 				
+				<div class="input-field col s12">
+					<input class="waves-effect waves-light btn" type="submit" value="Salvar" />
+					<input class="waves-effect waves-light btn" type="button" value="Novo" onclick="document.getElementById('formPessoa').reset();" />
+				</div>
 			</div>
 		</form>
 	</div>
@@ -233,6 +246,33 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
+
+<script type="text/javascript">
+	function carregaCidades(estadoId) {
+		
+		
+		
+		$.ajax({
+			method : 'get',
+			url : '/carregaCidades',
+			data : "estadoId=" + estadoId,
+			success : function (response) {
+				
+				// Povoando o combo de cidades
+				const city = document.getElementById("city");
+				city.textContent = '' ;
+				const cidadesPorEstado = response;
+				
+				cidadesPorEstado.forEach((cidade) => {
+					  option = new Option(cidade.nome , cidade.id);
+					  city.options[city.options.length] = option;
+				});
+			}
+		}).fail(function(xhr , status , errorThrown) {
+			alert('Erro ao carregar as cidades' + xhr.responseText)
+		})
+	}
+</script>
 
 <script type="text/javascript">
 		var telefone = [];

@@ -72,6 +72,16 @@ public class Pessoa implements Serializable{
 	private String nomeFileCurriculo;
 	private String tipoFileCurriculo;
 	
+	private String city;
+	
+	public String getCity() {
+		return city;
+	}
+	
+	public void setCity(String city) {
+		this.city = city;
+	}
+	
 	public String getNomeFileCurriculo() {
 		return nomeFileCurriculo;
 	}

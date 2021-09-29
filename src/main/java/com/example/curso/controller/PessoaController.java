@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -27,8 +29,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.example.curso.model.Cidades;
 import com.example.curso.model.Pessoa;
 import com.example.curso.model.Telefone;
+import com.example.curso.repository.CidadesRepository;
+import com.example.curso.repository.EstadosRepository;
 import com.example.curso.repository.PessoaRepository;
 import com.example.curso.repository.ProfissaoRepository;
 import com.example.curso.repository.TelefoneRepository;
@@ -49,6 +54,11 @@ public class PessoaController {
 	@Autowired
 	private ProfissaoRepository profissaoRepository;
 	
+	@Autowired
+	private EstadosRepository estadosRepository;
+	
+	@Autowired
+	private CidadesRepository cidadesRepository;
 	
 	@RequestMapping(method = RequestMethod.GET , value = "/cadastropessoa")
 	public ModelAndView inicio() {
@@ -56,6 +66,7 @@ public class PessoaController {
 		andView.addObject("pessoaobj" , new Pessoa());
 		andView.addObject("pessoas" , pessoaRepository.findAll(PageRequest.of(0, 5 , Sort.by("nome"))));
 		andView.addObject("profissoes", profissaoRepository.findAll());
+		andView.addObject("estados", estadosRepository.findAll());
 		return andView;
 	}
 	
@@ -122,11 +133,20 @@ public class PessoaController {
 	public ModelAndView editar(@PathVariable("idpessoa") Long id) {
 		
 		
+		
 		ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
 		Pessoa pessoaBuscada = pessoaRepository.findById(id).get();
+		List<Cidades> city = new ArrayList<>();
+		
+		if(pessoaBuscada.getCity() != null) {
+			city.add(cidadesRepository.findById(Long.parseLong(pessoaBuscada.getCity())).get());
+		}
+		
 		andView.addObject("pessoaobj" , pessoaBuscada);
 		andView.addObject("pessoas", pessoaRepository.findAll(PageRequest.of(0, 5 , Sort.by("nome"))));
 		andView.addObject("profissoes", profissaoRepository.findAll());
+		andView.addObject("estados", estadosRepository.findAll());
+		andView.addObject("citys" ,  city);
 		return andView;
 	}
 	
@@ -308,5 +328,14 @@ public class PessoaController {
 		model.setViewName("cadastro/cadastropessoa");
 		
 		return model;
+	}
+	
+	@GetMapping("**/carregaCidades/")
+	public ResponseEntity<List<Cidades>> carregaCidades(@RequestParam Long estadoId) {
+		
+		List<Cidades> cidades = cidadesRepository.buscaCidadePorEstado(estadoId);
+		
+		return new ResponseEntity<List<Cidades>>(cidades , HttpStatus.OK);
+		
 	}
 }
